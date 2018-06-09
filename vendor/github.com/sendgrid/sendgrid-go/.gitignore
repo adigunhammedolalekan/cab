@@ -1,0 +1,5 @@
+.DS_Store
+temp.go
+*.swp
+.env
+coverage.txt

@@ -1,0 +1,6 @@
+development:
+  driver: postgres
+  openStr: user=postgres password=man dbname=citicab sslmode=disable
+  table: driver_locations
+  latCol: lat
+  lngCol: lng
