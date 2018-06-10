@@ -116,3 +116,23 @@ var UserLogin = func(c *gin.Context) {
 	c.JSON(200, r)
 }
 
+var ResendOtpCode = func(c *gin.Context) {
+
+	id, ok := c.Get("user")
+	if !ok {
+		c.JSON(200, u.UnAuthorizedMessage())
+		return
+	}
+
+	user := id . (uint)
+	auth := models.CreateAuth(user)
+	if auth != nil {
+		acc := models.GetUser(user)
+		if acc != nil {
+			auth.SendToUser(acc.Phone)
+		}
+	}
+
+	c.JSON(200, u.Message(true, "Code Sent!"))
+}
+

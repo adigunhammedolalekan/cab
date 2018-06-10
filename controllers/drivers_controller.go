@@ -116,3 +116,24 @@ var DriverLogin = func(c *gin.Context) {
 	r := models.DriverLogin(driver)
 	c.JSON(200, r)
 }
+
+
+var ResendDriverOtpCode = func(c *gin.Context) {
+
+	id, ok := c.Get("user")
+	if !ok {
+		c.JSON(200, u.UnAuthorizedMessage())
+		return
+	}
+
+	user := id . (uint)
+	auth := models.CreateAuth(user)
+	if auth != nil {
+		acc := models.GetDriver(user)
+		if acc != nil {
+			auth.SendToUser(acc.Phone)
+		}
+	}
+
+	c.JSON(200, u.Message(true, "Code Sent!"))
+}

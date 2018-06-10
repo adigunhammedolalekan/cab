@@ -27,6 +27,16 @@ func CreateAuth(user uint) *Auth {
 	return auth
 }
 
+func (auth *Auth) SendToUser(phone string) {
+
+	text := fmt.Sprintf("Your CitiCab authentication code is %d", auth.Code)
+	smsRequest := &SmsRequest{
+		Text: text,
+		Phone: phone,
+	}
+
+	SmsQueue <- smsRequest
+}
 
 func GetAuth(user uint) *Auth {
 
