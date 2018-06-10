@@ -24,6 +24,7 @@ func CreateAuth(user uint) *Auth {
 		return nil
 	}
 
+	fmt.Println(auth.Code)
 	return auth
 }
 
