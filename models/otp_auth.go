@@ -19,7 +19,11 @@ func CreateAuth(user uint) *Auth {
 		Code: rand.Intn(99999),
 	}
 
-	err := Db.FirstOrCreate(auth, "user = ?", user).Error
+	err := Db.FirstOrCreate(auth, "user_id = ?", user).Error
+	if err != nil {
+		return nil
+	}
+	err = Db.Table("auths").Where("user_id = ?", auth.UserId).UpdateColumn(auth).Error
 	if err != nil {
 		return nil
 	}
