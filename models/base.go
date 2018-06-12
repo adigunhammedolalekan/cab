@@ -133,7 +133,6 @@ func SendEmail(request *MailRequest) error {
 	return nil
 }
 
-
 func GenJWT(user uint) string {
 	tk := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), &Token{UserId: user})
 	token, _ := tk.SignedString([]byte(os.Getenv("tk_password")))

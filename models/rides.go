@@ -4,9 +4,11 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/kellydunn/golang-geo"
 	"fmt"
-	u "citicab/utils"
 )
 
+const (
+	EARTH_RADIUS = 6371
+)
 type Ride struct {
 
 	gorm.Model
@@ -57,40 +59,59 @@ func CreateRide(ride *Ride) bool {
 	user := GetUser(ride.UserId)
 	driver := GetDriver(ride.DriverId)
 	if user == nil || driver == nil {
+		fmt.Println("Driver or User is nil")
 		return false
 	}
 
 	ride.Status = 0
 	err := Db.Create(ride).Error
+
+	fmt.Println(err)
 	return err == nil
 }
 
 func FindDriver(loc *UserLocation) *Driver {
 
-	mapper, err := geo.HandleWithSQL()
+	sql := BuildSQL(loc.Lat,loc.Lon, float64(30.00))
+	driverLocations := make([]*DriverLocation, 0)
+	err := Db.Table("driver_locations").Raw(sql).Find(&driverLocations).Error
 	if err != nil {
 		fmt.Println(err)
 		return nil
 	}
 
-	point := geo.NewPoint(loc.Lat, loc.Lon)
-	rows, err := mapper.PointsWithinRadius(point, float64(30))
-	if err != nil {
-		return nil
-	}
+	nearestDriver := &Driver{}
+	shortestDistance := 100.0
+	for _, driverLoc := range driverLocations {
 
-	drivers := []*Driver{}
-	u.MapRowsToSliceOfStruct(rows, &drivers, false)
+		next := GetDriver(driverLoc.DriverId)
+		if next.Occupied == 1 { //Driver already occupied
+			continue
+		}
 
-	found := &Driver{}
-	for _, d := range drivers {
-		if d.Status == "online" {
-			found = d
-			break
+		p1 := geo.NewPoint(loc.Lat, loc.Lon)
+		p2 := geo.NewPoint(driverLoc.Lat, driverLoc.Lon)
+		distance := p1.GreatCircleDistance(p2)
+		nearestDriver = next
+		if distance < shortestDistance {
+			shortestDistance = distance
+			nearestDriver = next
 		}
 	}
 
-	return found
+	return nearestDriver
+}
+
+
+func BuildSQL(lat, lon, radius float64) string {
+
+	select_str := fmt.Sprintf("SELECT * FROM driver_locations a")
+	lat1 := fmt.Sprintf("sin(radians(%f)) * sin(radians(a.lat))", lat)
+	lng1 := fmt.Sprintf("cos(radians(%f)) * cos(radians(a.lat)) * cos(radians(a.lon) - radians(%f))", lat, lon)
+	where_str := fmt.Sprintf("WHERE acos(%s + %s) * %f <= %f", lat1, lng1, float64(EARTH_RADIUS), radius)
+	query := fmt.Sprintf("%s %s", select_str, where_str)
+
+	return query
 }
 
 func GetRide(id uint) *Ride {

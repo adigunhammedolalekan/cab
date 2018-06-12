@@ -62,7 +62,7 @@ var NewRide = func(c *gin.Context) {
 	}
 
 	driver := models.FindDriver(loc)
-	if driver == nil {
+	if driver == nil || driver.ID <= 0 {
 		c.JSON(200, u.Message(false, "No Driver found within your area"))
 		return
 	}
@@ -70,10 +70,11 @@ var NewRide = func(c *gin.Context) {
 	ride.DriverId = driver.ID
 	ok = models.CreateRide(ride)
 	if !ok {
-		c.JSON(200, "Failed to create ride. Please retry")
+		c.JSON(200, u.Message(false, "Failed to create ride. Please retry"))
 		return
 	}
 
+	ride = models.GetRide(ride.ID)
 	r := u.Message(true, "Ride Created")
 	r["ride"] = ride
 

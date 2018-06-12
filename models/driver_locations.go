@@ -10,7 +10,7 @@ type DriverLocation struct {
 
 func UpdateDriversLocation(loc *DriverLocation) (map[string]interface{}) {
 
-	err := Db.Table("user_locations").Where("user_id = ?", loc.DriverId).UpdateColumn(loc).Error
+	err := Db.Table("driver_location").Where("user_id = ?", loc.DriverId).UpdateColumn(loc).Error
 	if err != nil {
 		return u.Message(false, "Failed to update location. Please, retry")
 	}
@@ -21,7 +21,7 @@ func UpdateDriversLocation(loc *DriverLocation) (map[string]interface{}) {
 func GetDriversLocation(id uint) *DriverLocation {
 
 	loc := &DriverLocation{}
-	err := Db.Table("driver_locations").Where("driver_id = ?", id).First(loc).Error
+	err := Db.Table("driver_location").Where("driver_id = ?", id).First(loc).Error
 	if err != nil {
 		return nil
 	}

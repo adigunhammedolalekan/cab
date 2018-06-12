@@ -122,6 +122,37 @@ func UpdatePassword(user *User) (map[string]interface{}) {
 	return u.Message(true, "Password updated")
 }
 
+func (user *User) SendForgotPasswordEmail() (map[string] interface{}) {
+
+	if user.ID <= 0 {
+		return u.Message(false, "Set user first")
+	}
+
+	auth := CreateAuth(user.ID)
+	if auth != nil {
+
+		mailReq := &MailRequest{
+			Subject: "Password Reset Instruction",
+			Body: fmt.Sprintf("Hi, Use code %d to reset your password", auth.UserId),
+			To: user.Email,
+		}
+
+		MailQueue <- mailReq
+	}
+
+	return u.Message(true, "Success")
+}
+
+func GetUserByEmail(email string) *User {
+
+	user := &User{}
+	err := Db.Table("users").Where("email = ?", strings.TrimSpace(email)).First(user).Error
+	if err != nil {
+		return nil
+	}
+
+	return user
+}
 
 func GetUser(id uint) *User {
 

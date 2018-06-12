@@ -136,3 +136,22 @@ var ResendOtpCode = func(c *gin.Context) {
 	c.JSON(200, u.Message(true, "Code Sent!"))
 }
 
+var UserForgotPassword = func(c *gin.Context) {
+
+	data := make(map[string] interface{})
+	err := c.ShouldBind(&data)
+	if err != nil {
+		c.JSON(200, u.InvalidRequestMessage())
+		return
+	}
+
+	email := data["email"]
+	user := models.GetUserByEmail(email . (string))
+
+	r := u.Message(false, fmt.Sprintf("User with email %s not found", email . (string)))
+	if user != nil {
+		r = user.SendForgotPasswordEmail()
+	}
+	c.JSON(200, r)
+}
+

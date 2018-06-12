@@ -16,6 +16,7 @@ type Driver struct {
 	Phone string `json:"phone"`
 	Password string `json:"password"`
 	Status string `json:"status"`
+	Occupied int `json:"occupied"`
 	Verified bool `json:"verified"`
 	CarName string `json:"car_name"`
 	PlateNumber string `json:"plate_number"`
