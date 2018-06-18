@@ -137,3 +137,24 @@ var ResendDriverOtpCode = func(c *gin.Context) {
 
 	c.JSON(200, u.Message(true, "Code Sent!"))
 }
+
+var UpdateLocation = func(c *gin.Context) {
+
+	driverLoc := &models.DriverLocation{}
+	err := c.ShouldBind(driverLoc)
+	if err != nil {
+		c.JSON(200, u.UnAuthorizedMessage())
+		return
+	}
+
+	id, ok := c.Get("user")
+	if !ok {
+		c.JSON(200, u.UnAuthorizedMessage())
+		return
+	}
+
+	user := id . (uint)
+	driverLoc.DriverId = user
+	m := models.UpdateDriversLocation(driverLoc)
+	c.JSON(200, m)
+}

@@ -39,6 +39,7 @@ func main() {
 	r.POST("/api/ride/status/:ride", controllers.UpdateStatus)
 	r.GET("/api/user/verify/resend", controllers.ResendOtpCode)
 	r.GET("/api/driver/verify/resend", controllers.ResendDriverOtpCode)
+	r.POST("/driver/location/update", controllers.UpdateLocation)
 
 	r.GET("/api/ws/connect", func(context *gin.Context) {
 		m.HandleRequest(context.Writer, context.Request)
