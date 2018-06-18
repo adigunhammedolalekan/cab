@@ -25,6 +25,7 @@ func CreateAuth(user uint) *Auth {
 	if count == 0 {
 		err = Db.Create(auth).Error
 		if err == nil {
+			fmt.Println(auth.Code)
 			return auth
 		}
 
