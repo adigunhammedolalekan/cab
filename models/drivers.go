@@ -18,6 +18,7 @@ type Driver struct {
 	Status string `json:"status"`
 	Occupied int `json:"occupied"`
 	Verified bool `json:"verified"`
+	CarMake string `json:"car_make"`
 	CarName string `json:"car_name"`
 	PlateNumber string `json:"plate_number"`
 	Token string `gorm:"-" sql:"-" json:"token"`

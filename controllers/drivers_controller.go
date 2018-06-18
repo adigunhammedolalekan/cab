@@ -37,12 +37,12 @@ var VerifyDriverCode = func(c *gin.Context) {
 	}
 
 	user, ok := c.Get("user")
-	id := user . (uint)
-	if !ok || id <= 0 {
+	if !ok {
 		c.JSON(200, u.UnAuthorizedMessage())
 		return
 	}
 
+	id := user . (uint)
 	auth := models.GetAuth(id)
 	if auth == nil {
 		c.JSON(200, u.Message(false, "No authentication code user"))
