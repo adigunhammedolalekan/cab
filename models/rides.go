@@ -111,6 +111,8 @@ func BuildSQL(lat, lon, radius float64) string {
 	where_str := fmt.Sprintf("WHERE acos(%s + %s) * %f <= %f", lat1, lng1, float64(EARTH_RADIUS), radius)
 	query := fmt.Sprintf("%s %s", select_str, where_str)
 
+	fmt.Println(query)
+
 	return query
 }
 
