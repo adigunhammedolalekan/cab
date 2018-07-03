@@ -11,7 +11,11 @@ import (
 
 var GinJwt = func(c *gin.Context) {
 
-	noAuth := []string {"/api/user/verify", "/api/driver/verify", "/api/ws/connect"}
+	noAuth := []string {"/api/user/verify",
+						"/api/driver/verify",
+						"/api/ws/connect",
+						"/api/user/login",
+						"/api/driver/login"}
 	path := c.Request.RequestURI
 
 	for _, val := range noAuth {
