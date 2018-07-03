@@ -74,7 +74,7 @@ func FindDriver(loc *UserLocation) *Driver {
 
 	sql := BuildSQL(loc.Lat,loc.Lon, float64(30.00))
 	driverLocations := make([]*DriverLocation, 0)
-	err := Db.Table("driver_locations").Raw(sql).Find(&driverLocations).Error
+	err := Db.Table("driver_locations").Raw(sql).Scan(&driverLocations).Error
 	if err != nil {
 		fmt.Println(err)
 		return nil
