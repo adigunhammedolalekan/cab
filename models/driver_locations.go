@@ -1,7 +1,11 @@
 package models
 
-import u "citicab/utils"
+import (
+	u "citicab/utils"
+	"github.com/jinzhu/gorm"
+)
 type DriverLocation struct {
+	gorm.Model
 	DriverId uint `json:"driver_id"`
 	Lat float64 `json:"lat"`
 	Lon float64 `json:"lon"`
@@ -10,7 +14,14 @@ type DriverLocation struct {
 
 func UpdateDriversLocation(loc *DriverLocation) (map[string]interface{}) {
 
-	err := Db.Table("driver_location").Where("user_id = ?", loc.DriverId).UpdateColumn(loc).Error
+	temp := &DriverLocation{}
+	err := Db.Table("driver_locations").Where("driver_id = ?", loc.DriverId).First(temp).Error
+	if err == gorm.ErrRecordNotFound {
+		err = Db.Create(loc).Error
+		return u.Message(err == nil, "location updated")
+	}
+
+	err = Db.Table("driver_locations").Where("driver_id = ?", loc.DriverId).UpdateColumn(loc).Error
 	if err != nil {
 		return u.Message(false, "Failed to update location. Please, retry")
 	}

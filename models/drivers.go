@@ -94,17 +94,17 @@ func (driver *Driver) Update() (map[string] interface{}) {
 func DriverLogin(driver *Driver) (map[string]interface{}) {
 
 	temp := &Driver{}
-	err := Db.Table("users").Where("phone = ?", driver.Phone).First(temp).Error
+	err := Db.Table("drivers").Where("phone = ?", driver.Phone).First(temp).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return u.Message(false, "User with phone " + driver.Phone + " not found")
+			return u.Message(false, "Driver with phone " + driver.Phone + " not found")
 		}
 
 		return u.Message(false, "Failed to complete login request. Please, retry")
 	}
 
 	if temp.ID <= 0 {
-		return u.Message(false, "User with phone " + driver.Phone + " not found")
+		return u.Message(false, "Driver with phone " + driver.Phone + " not found")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(temp.Password), []byte(driver.Password))
@@ -112,10 +112,10 @@ func DriverLogin(driver *Driver) (map[string]interface{}) {
 		return u.Message(false, "Invalid login credentials")
 	}
 
-	driver.Password = ""
-	driver.Token = GenJWT(temp.ID)
+	temp.Password = ""
+	temp.Token = GenJWT(temp.ID)
 	r := u.Message(true, "success")
-	r["driver"] = driver
+	r["driver"] = temp
 	return r
 }
 
@@ -129,6 +129,16 @@ func UpdateDriversPassword(driver *Driver) (map[string]interface{}) {
 	}
 
 	return u.Message(true, "Password updated")
+}
+
+func UpdateDriverStatus(driver uint, status string) error {
+
+	err := Db.Table("drivers").Where("id = ?", driver).Update("status", status).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 

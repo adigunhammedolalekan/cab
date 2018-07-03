@@ -158,3 +158,28 @@ var UpdateLocation = func(c *gin.Context) {
 	m := models.UpdateDriversLocation(driverLoc)
 	c.JSON(200, m)
 }
+
+var UpdateDriverStatus = func(c *gin.Context) {
+
+	data := make(map[string] interface{})
+	err := c.ShouldBind(&data)
+	if err != nil {
+		c.JSON(200, u.InvalidRequestMessage())
+		return
+	}
+
+	id, ok := c.Get("user")
+	if !ok {
+		c.JSON(403, u.UnAuthorizedMessage())
+		return
+	}
+
+	user := id . (uint)
+	err = models.UpdateDriverStatus(user, data["status"] . (string))
+
+	var message string = "Failed to update status."
+	if err == nil {
+		message = "status updated"
+	}
+	c.JSON(200, u.Message(true, message))
+}

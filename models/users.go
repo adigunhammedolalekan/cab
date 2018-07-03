@@ -103,8 +103,9 @@ func Login(user *User) (map[string]interface{}) {
 		return u.Message(false, "Invalid login credentials")
 	}
 
+	user = temp;
 	user.Password = ""
-	user.Token = GenJWT(temp.ID)
+	user.Token = GenJWT(user.ID)
 	r := u.Message(true, "success")
 	r["user"] = user
 	return r
