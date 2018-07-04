@@ -14,6 +14,7 @@ var (
 func NotifyDriver(ride *models.Ride) {
 
 	sessId := fmt.Sprintf("driver%d", ride.DriverId)
+	fmt.Println(sessId)
 	sess := wsChannels[sessId]
 	if sess != nil {
 		wsMessage := &models.WsMessage{
@@ -22,6 +23,7 @@ func NotifyDriver(ride *models.Ride) {
 		}
 
 		data, _ := json.Marshal(wsMessage)
+		fmt.Println("Sending => ", data)
 		sess.Write(data)
 	}
 }
