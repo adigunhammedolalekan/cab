@@ -74,7 +74,7 @@ func FindDriver(loc *UserLocation) *Driver {
 
 	sql := BuildSQL(loc.Lat,loc.Lon, float64(30.00))
 	driverLocations := make([]*DriverLocation, 0)
-	err := Db.Table("driver_locations").Raw(sql).Scan(&driverLocations).Error
+	err := Db.Raw(sql).Scan(&driverLocations).Error
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -85,7 +85,7 @@ func FindDriver(loc *UserLocation) *Driver {
 	for _, driverLoc := range driverLocations {
 
 		next := GetDriver(driverLoc.DriverId)
-		if next.Occupied == 1 { //Driver already occupied
+		if next.Occupied == 1 || next.Status == "offline" { //Driver is offline or already occupied
 			continue
 		}
 
@@ -111,8 +111,6 @@ func BuildSQL(lat, lon, radius float64) string {
 	where_str := fmt.Sprintf("WHERE acos(%s + %s) * %f <= %f", lat1, lng1, float64(EARTH_RADIUS), radius)
 	query := fmt.Sprintf("%s %s", select_str, where_str)
 
-	fmt.Println(query)
-
 	return query
 }
 
@@ -124,7 +122,22 @@ func GetRide(id uint) *Ride {
 		return nil
 	}
 
-	ride.User = GetUser(ride.UserId)
-	ride.Driver = GetDriver(ride.DriverId)
+	user := GetUser(ride.UserId)
+	driver := GetDriver(ride.DriverId)
+
+	if user != nil {
+		user.Password = ""
+	}
+
+	if driver != nil {
+		driver.Password = ""
+	}
+	user.Password = ""
+	driver.Password = ""
+
+	ride.User = user
+	ride.Driver = driver
+
+
 	return ride
 }

@@ -9,6 +9,7 @@ import (
 	"citicab/core"
 	"citicab/controllers"
 	"citicab/models"
+	"fmt"
 )
 
 var (
@@ -59,6 +60,7 @@ func main() {
 			action := data.Action
 			switch action {
 			case DRIVER_SUB:
+				fmt.Println("Received Sub request")
 				dv := models.GetDriver(data.UniqueId)
 				if dv != nil {
 					core.SubscribeDriverToChannel(dv, session)
