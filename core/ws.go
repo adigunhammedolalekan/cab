@@ -36,8 +36,9 @@ func SubscribeDriverToChannel(driver *models.Driver, session *melody.Session) bo
 		return true
 	}
 
-	fmt.Println(len(wsChannels))
-	//Already subscribed
+	delete(wsChannels, sessId)
+	wsChannels[sessId] = session
+
 	return false
 }
 
