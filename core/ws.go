@@ -23,7 +23,7 @@ func NotifyDriver(ride *models.Ride) {
 
 		data, _ := json.Marshal(wsMessage)
 
-		fmt.Println("Sending ==> ", string(data))
+		fmt.Println("Sending to ==> ", sessId)
 		sess.Write(data)
 	}
 }
