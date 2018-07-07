@@ -23,7 +23,6 @@ func NotifyDriver(ride *models.Ride) {
 		}
 
 		data, _ := json.Marshal(wsMessage)
-		fmt.Println("Sending => ", data)
 		sess.Write(data)
 	}
 }
@@ -34,6 +33,7 @@ func SubscribeDriverToChannel(driver *models.Driver, session *melody.Session) bo
 	_, ok := wsChannels[sessId]
 	if !ok {
 		wsChannels[sessId] = session
+		session.Write([]byte("Subscribed"))
 		return true
 	}
 
