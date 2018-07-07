@@ -27,19 +27,11 @@ func NotifyDriver(ride *models.Ride) {
 	}
 }
 
-func SubscribeDriverToChannel(driver *models.Driver, session *melody.Session) bool {
+func SubscribeDriverToChannel(driver *models.Driver, session *melody.Session) {
 
 	sessId := fmt.Sprintf("driver%d", driver.ID)
-	_, ok := wsChannels[sessId]
-	if !ok {
-		wsChannels[sessId] = session
-		return true
-	}
-
-	delete(wsChannels, sessId)
 	wsChannels[sessId] = session
 
-	return false
 }
 
 
