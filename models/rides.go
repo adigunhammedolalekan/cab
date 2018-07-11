@@ -21,7 +21,7 @@ type Ride struct {
 	DestinationLon float64 `json:"destination_lon"`
 	PickupAddress string `json:"pickup_address"`
 	DestinationAddress string `json:"destination_address"`
-	Status uint `json:"status"`
+	Status uint `json:"status"` //0 = new, 1 = rejected, 2 = driver_cancelled, 3 = user_cancelled, 4 = started, 5 = ended
 	Message string `json:"message"`
 	User *User `gorm:"-" sql:"-" json:"user"`
 	Driver *Driver `gorm:"-" sql:"-" json:"driver"`
@@ -99,6 +99,9 @@ func FindDriver(loc *UserLocation) *Driver {
 		}
 	}
 
+	if nearestDriver.ID > 0 {
+		nearestDriver.SetOccupied()
+	}
 	return nearestDriver
 }
 

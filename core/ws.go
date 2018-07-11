@@ -23,7 +23,6 @@ func NotifyDriver(ride *models.Ride) {
 
 		data, _ := json.Marshal(wsMessage)
 
-		fmt.Println("Sending => , to => ", string(data), sessId)
 		err := sess.Write(data)
 		fmt.Println(err)
 	}
@@ -37,21 +36,11 @@ func SubscribeDriverToChannel(driver *models.Driver, session *melody.Session) {
 }
 
 
-func SubscribeToRideChannel(ride *models.Ride, session *melody.Session) bool {
+func SubscribeUserToChannel(user *models.User, session *melody.Session) {
 
-	sessId := fmt.Sprintf("ride%d", ride.ID)
-	_, ok := rideChannels[sessId]
-	if !ok {
-		channel := &models.Channel{
-			ChannelName: sessId,
-		}
-		channel.Sessions = append(channel.Sessions, session)
-		rideChannels[sessId] = channel
-		return true
-	}
+	sessId := fmt.Sprintf("user%d", user.ID)
+	wsChannels[sessId] = session
 
-	//Already subscribed
-	return false
 }
 
 func UnSubscribeDriverFromChannel(driver *models.Driver) bool {
@@ -82,10 +71,24 @@ func UnSubscribeFromRideChannel(ride *models.Ride) bool {
 
 func NotifyRideStatus(ride *models.Ride) error {
 
-	sessId := fmt.Sprintf("ride%d", ride.ID)
-	channel, ok := rideChannels[sessId]
-	if ok {
-		return channel.Send(ride)
+
+	wsMessage := &models.WsMessage{
+		Action: "ride_update",
+		NewRide:ride,
+	}
+
+	data, _ := json.Marshal(wsMessage)
+	driverSessId := fmt.Sprintf("driver%d", ride.Driver.ID)
+	userSessId := fmt.Sprintf("user%d", ride.User.ID)
+
+	sess := wsChannels[driverSessId]
+	if sess != nil {
+		sess.Write(data)
+	}
+
+	sess = wsChannels[userSessId]
+	if sess != nil {
+		sess.Write(data)
 	}
 
 	return nil

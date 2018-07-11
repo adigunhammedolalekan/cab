@@ -98,6 +98,11 @@ var UpdateStatus = func(c *gin.Context) {
 	}
 
 	ride := models.GetRide(uint(rideId))
+	if ride == nil {
+		c.JSON(200, u.InvalidRequestMessage())
+		return
+	}
+
 	if ride.UserId != user && ride.DriverId != user {
 		c.JSON(200, u.UnAuthorizedMessage())
 		return

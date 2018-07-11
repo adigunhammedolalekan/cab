@@ -15,6 +15,7 @@ import (
 var (
 	DRIVER_SUB = "driver_sub"
 	RIDE_SUB = "ride_sub"
+	USER_SUB = "user_sub"
 	EVENT = "events"
 )
 func main() {
@@ -60,16 +61,15 @@ func main() {
 			action := data.Action
 			switch action {
 			case DRIVER_SUB:
-				fmt.Println("Received Sub request")
 				dv := models.GetDriver(data.UniqueId)
 				if dv != nil {
 					core.SubscribeDriverToChannel(dv, session)
 				}
 				break
-			case RIDE_SUB:
-				ride := models.GetRide(data.UniqueId)
-				if ride != nil {
-					core.SubscribeToRideChannel(ride, session)
+			case USER_SUB:
+				user := models.GetUser(data.UniqueId)
+				if user != nil {
+					core.SubscribeUserToChannel(user, session)
 				}
 				break
 			}

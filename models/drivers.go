@@ -141,6 +141,13 @@ func UpdateDriverStatus(driver uint, status string) error {
 	return nil
 }
 
+func (d *Driver) SetOccupied() {
+
+	err := Db.Table("drivers").Where("id = ?", d.ID).Update("occupied", 1).Error
+	if err != nil {
+		fmt.Println(err)
+	}
+}
 
 func GetDriver(id uint) *Driver {
 
