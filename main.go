@@ -9,7 +9,6 @@ import (
 	"citicab/core"
 	"citicab/controllers"
 	"citicab/models"
-	"fmt"
 )
 
 var (
