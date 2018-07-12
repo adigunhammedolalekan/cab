@@ -46,11 +46,23 @@ func (ride *Ride) GetStatus() string {
 
 func (ride *Ride) UpdateStatus() (error) {
 
-	err := Db.Table("rides").Where("id = ?", ride.ID).UpdateColumn("status", ride.Status).Error
+	tx := Db.Begin()
+
+	err := tx.Table("rides").Where("id = ?", ride.ID).UpdateColumn("status", ride.Status).Error
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 
+	if ride.Status == 2 || ride.Status == 3 {//Cancelled by USER or DRIVER?, free the driver
+		err = tx.Table("drivers").Where("id = ?", ride.Driver.ID).UpdateColumn("occupied", 0).Error
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	tx.Commit()
 	return nil
 }
 

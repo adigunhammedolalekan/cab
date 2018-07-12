@@ -103,7 +103,7 @@ var UpdateStatus = func(c *gin.Context) {
 		return
 	}
 
-	if ride.UserId != user && ride.DriverId != user {
+	if ride.UserId != user || ride.DriverId != user {
 		c.JSON(200, u.UnAuthorizedMessage())
 		return
 	}

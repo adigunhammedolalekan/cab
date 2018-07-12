@@ -18,7 +18,7 @@ func InvalidRequestMessage() map[string] interface{} {
 }
 
 func UnAuthorizedMessage() map[string]interface{} {
-	return Message(false, "Authorized")
+	return Message(false, "UnAuthorized")
 }
 
 func Respond(w http.ResponseWriter, data map[string] interface{})  {
