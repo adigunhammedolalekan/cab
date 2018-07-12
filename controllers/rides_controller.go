@@ -103,20 +103,17 @@ var UpdateStatus = func(c *gin.Context) {
 		return
 	}
 
-	if ride.UserId != user || ride.DriverId != user {
-		c.JSON(200, u.UnAuthorizedMessage())
-		return
+	if ride.UserId == user || ride.DriverId == user {
+		rs, err := strconv.Atoi(c.Param("status"))
+		if err != nil {
+			c.JSON(200, u.InvalidRequestMessage())
+			return
+		}
+
+		ride.Status = uint(rs)
+		err = ride.UpdateStatus()
+
+		core.NotifyRideStatus(ride)
+		c.JSON(200, u.Message(true, "Ride Status Updated"))
 	}
-
-	rs, err := strconv.Atoi(c.Param("status"))
-	if err != nil {
-		c.JSON(200, u.UnAuthorizedMessage())
-		return
-	}
-
-	ride.Status = uint(rs)
-	err = ride.UpdateStatus()
-
-	core.NotifyRideStatus(ride)
-	c.JSON(200, u.Message(true, "Ride Status Updated"))
 }
