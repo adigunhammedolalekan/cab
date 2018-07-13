@@ -103,13 +103,16 @@ var UpdateStatus = func(c *gin.Context) {
 		return
 	}
 
-	if ride.UserId == user || ride.DriverId == user {
-		rs, err := strconv.Atoi(c.Param("status"))
-		if err != nil {
-			c.JSON(200, u.InvalidRequestMessage())
-			return
-		}
+	data := make(map[string] interface{}, 0)
+	err = c.ShouldBind(&data)
+	if err != nil {
+		c.JSON(200, u.InvalidRequestMessage())
+		return
+	}
 
+	if ride.UserId == user || ride.DriverId == user {
+
+		rs := data["status"] . (int64)
 		ride.Status = uint(rs)
 		err = ride.UpdateStatus()
 
