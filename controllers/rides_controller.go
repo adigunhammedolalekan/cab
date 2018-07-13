@@ -112,7 +112,7 @@ var UpdateStatus = func(c *gin.Context) {
 
 	if ride.UserId == user || ride.DriverId == user {
 
-		rs := data["status"] . (int64)
+		rs := data["status"] . (float64)
 		ride.Status = uint(rs)
 		err = ride.UpdateStatus()
 
