@@ -11,8 +11,9 @@ import (
 	"math/rand"
 	"time"
 	"encoding/json"
-	"gopkg.in/njern/gonexmo.v2"
 	"github.com/dgrijalva/jwt-go"
+	"net/http"
+	"net/url"
 )
 
 var (
@@ -86,30 +87,39 @@ type MailRequest struct {
 }
 
 type SmsRequest struct {
-	Text string `json:"text"`
-	Phone string `json:"phone"`
+
+	ApiToken string `json:"api_token"`
+	To string `json:"to"`
+	From string `json:"from"`
+	Body string `json:"body"`
+	DND string `json:"dnd"`
 }
 
 func (smsRequest *SmsRequest) Send() (error) {
 
-	nex, err := nexmo.NewClient(os.Getenv("NEXMO_API_KEY"), os.Getenv("NEXMO_SECRET_KEY"))
-	if err != nil || nex == nil {
-		fmt.Println(err)
-	}
-	message := &nexmo.SMSMessage{
 
-		From: "CitiCab",
-		To: smsRequest.Phone,
-		Text: smsRequest.Text,
-		Class: nexmo.Standard,
-	}
+	apiUrl := "https://www.bulksmsnigeria.com"
+	resource := "/api/v1/sms/create/"
+	u, _ := url.ParseRequestURI(apiUrl)
+	u.Path = resource
+	urlStr := u.String()
 
-	resp, err := nex.SMS.Send(message)
+	req, _ := http.NewRequest("POST", urlStr, nil)
+	data := req.URL.Query()
+	data.Add("api_token", smsRequest.ApiToken)
+	data.Add("to", smsRequest.To)
+	data.Add("from", smsRequest.From)
+	data.Add("body", smsRequest.Body)
+	data.Add("dnd", "1")
+
+	req.URL.RawQuery = data.Encode()
+	cli := &http.Client{}
+	response, err := cli.Do(req)
 	if err != nil {
 		fmt.Println(err)
-		return err
 	}
-	fmt.Println(resp.MessageCount)
+
+	fmt.Println(response.Status)
 	return nil
 }
 
@@ -119,7 +129,7 @@ func (request *MailRequest) Send() (error) {
 
 func SendEmail(request *MailRequest) error {
 
-	from := mail.NewEmail("CitiCab", os.Getenv("email"))
+	from := mail.NewEmail("CitiKab", os.Getenv("email"))
 	to := mail.NewEmail(request.Name, request.To)
 
 	message := mail.NewSingleEmail(from, request.Subject, to, request.Body, request.Body)

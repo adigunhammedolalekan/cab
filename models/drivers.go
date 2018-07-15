@@ -49,10 +49,12 @@ func VerifyDriversPhone(phone string) (map[string] interface{}) {
 	if auth != nil {
 		text := fmt.Sprintf("Your CitiCab authentication code: %d", auth.Code)
 		smsRequest := &SmsRequest{
-			Text: text,
-			Phone: strings.TrimSpace(phone),
+			To: phone,
+			DND: "1",
+			Body: text,
+			From: "CitiKab",
+			ApiToken: "evNlSXxvpzkJyzAVadcH024byBSqZbLiTAI80YbgRYzIaphAR4bUuWyTW63J",
 		}
-
 		SmsQueue <- smsRequest
 	}
 

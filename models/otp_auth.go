@@ -44,8 +44,11 @@ func (auth *Auth) SendToUser(phone string) {
 
 	text := fmt.Sprintf("Your CitiCab authentication code is %d", auth.Code)
 	smsRequest := &SmsRequest{
-		Text: text,
-		Phone: phone,
+		To: phone,
+		DND: "1",
+		Body: text,
+		From: "CitiKab",
+		ApiToken: "evNlSXxvpzkJyzAVadcH024byBSqZbLiTAI80YbgRYzIaphAR4bUuWyTW63J",
 	}
 
 	SmsQueue <- smsRequest

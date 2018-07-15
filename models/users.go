@@ -41,12 +41,14 @@ func VerifyPhone(phone string) (map[string] interface{}) {
 
 	auth := CreateAuth(user.ID)
 	if auth != nil {
-		text := fmt.Sprintf("Your CitiCab authentication code: %d", auth.Code)
+		text := fmt.Sprintf("Your CitiKab authentication code: %d", auth.Code)
 		smsRequest := &SmsRequest{
-			Text: text,
-			Phone: strings.TrimSpace(phone),
+			To: phone,
+			DND: "1",
+			Body: text,
+			From: "CitiKab",
+			ApiToken: "evNlSXxvpzkJyzAVadcH024byBSqZbLiTAI80YbgRYzIaphAR4bUuWyTW63J",
 		}
-
 		SmsQueue <- smsRequest
 	}
 	token := GenJWT(user.ID)
