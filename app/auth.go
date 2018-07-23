@@ -18,11 +18,17 @@ var GinJwt = func(c *gin.Context) {
 						"/api/driver/login"}
 	path := c.Request.RequestURI
 
+	var noAuthContained bool = false
 	for _, val := range noAuth {
 		if val == path {
-			c.Next()
-			return
+			noAuthContained = true
+			break
 		}
+	}
+
+	if noAuthContained {
+		c.JSON(403, u.UnAuthorizedMessage())
+		return
 	}
 
 	headerValue := c.GetHeader("Authorization")

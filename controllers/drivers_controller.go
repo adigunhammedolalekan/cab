@@ -183,3 +183,30 @@ var UpdateDriverStatus = func(c *gin.Context) {
 	}
 	c.JSON(200, u.Message(true, message))
 }
+
+var EditAccount = func(c *gin.Context) {
+
+	data := make(map[string] interface{})
+	err := c.ShouldBind(&data)
+	if err != nil {
+		c.JSON(200, u.InvalidRequestMessage())
+		return
+	}
+
+	user, ok := c.Get("user")
+	if !ok {
+		c.JSON(403, u.UnAuthorizedMessage())
+		return
+	}
+
+	id := user . (uint)
+	err, dv := models.Edit(data["column"] . (string), data["value"] . (string), id)
+	if err != nil {
+		c.JSON(200, u.Message(false, err.Error()))
+		return
+	}
+
+	response := u.Message(true, "success")
+	response["data"] = dv
+	c.JSON(200, response)
+}

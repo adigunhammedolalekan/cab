@@ -22,7 +22,6 @@ func NotifyDriver(ride *models.Ride) {
 		}
 
 		data, _ := json.Marshal(wsMessage)
-
 		err := sess.Write(data)
 		fmt.Println(err)
 	}

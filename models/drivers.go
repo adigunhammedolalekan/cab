@@ -6,6 +6,7 @@ import (
 	u "citicab/utils"
 	"golang.org/x/crypto/bcrypt"
 	"fmt"
+	"github.com/pkg/errors"
 )
 
 type Driver struct {
@@ -160,4 +161,24 @@ func GetDriver(id uint) *Driver {
 	}
 
 	return driver
+}
+
+func Edit(column, value string, user uint) (error, *Driver){
+
+	driver := &Driver{}
+	if column == "email" {
+		Db.Table("drivers").Where("email = ?", value).First(driver)
+		if driver.ID > 0 {
+			return errors.New("Email already in use by another customer"), nil
+		}
+	}
+	if column == "phone" {
+		Db.Table("drivers").Where("phone = ?", value).First(driver)
+		if driver.ID > 0 {
+			return errors.New("Phone number already in use by another customer"), nil
+		}
+	}
+
+	Db.Table("drivers").Where("id = ?", user).UpdateColumn(column, value)
+	return nil, GetDriver(user)
 }
