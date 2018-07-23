@@ -6,7 +6,7 @@ import (
 	u "citicab/utils"
 	"golang.org/x/crypto/bcrypt"
 	"fmt"
-	"github.com/pkg/errors"
+	"errors"
 )
 
 type Driver struct {
