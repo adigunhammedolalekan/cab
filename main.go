@@ -43,6 +43,7 @@ func main() {
 	r.POST("/api//driver/location/update", controllers.UpdateLocation)
 	r.POST("/api/driver/status/update", controllers.UpdateDriverStatus)
 	r.POST("/api/driver/account/edit", controllers.EditAccount)
+	r.GET("/api/driver/rides", controllers.GetRideHistory)
 
 	r.GET("/api/ws/connect", func(context *gin.Context) {
 		m.HandleRequest(context.Writer, context.Request)

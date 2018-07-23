@@ -117,6 +117,21 @@ func FindDriver(loc *UserLocation) *Driver {
 	return nearestDriver
 }
 
+func GetDriverRideHistory(id uint) (error, []*Ride) {
+
+	temp := make([]*Ride, 0)
+	err := Db.Table("rides").Where("driver_id = ?", id).Find(&temp).Error
+	if err != nil {
+		return err, nil
+	}
+
+	data := make([]*Ride, 0)
+	for _, next := range temp {
+		data = append(data, GetRide(next.ID))
+	}
+
+	return nil, data
+}
 
 func BuildSQL(lat, lon, radius float64) string {
 
@@ -147,12 +162,9 @@ func GetRide(id uint) *Ride {
 	if driver != nil {
 		driver.Password = ""
 	}
-	user.Password = ""
-	driver.Password = ""
 
 	ride.User = user
 	ride.Driver = driver
-
 
 	return ride
 }

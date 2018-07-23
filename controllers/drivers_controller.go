@@ -210,3 +210,23 @@ var EditAccount = func(c *gin.Context) {
 	response["data"] = dv
 	c.JSON(200, response)
 }
+
+var GetRideHistory = func(c *gin.Context) {
+
+	user, ok := c.Get("user")
+	if !ok {
+		c.JSON(403, u.UnAuthorizedMessage())
+		return
+	}
+
+	id := user . (uint)
+	err, data := models.GetDriverRideHistory(id)
+	if err != nil {
+		c.JSON(200, u.Message(false, "Failed to fetch history. Please retry"))
+		return
+	}
+
+	response := u.Message(true, "success")
+	response["data"] = data
+	c.JSON(200, response)
+}
