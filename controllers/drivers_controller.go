@@ -230,3 +230,27 @@ var GetRideHistory = func(c *gin.Context) {
 	response["data"] = data
 	c.JSON(200, response)
 }
+
+var ChangePassword = func(c *gin.Context) {
+
+	req := &models.ChangePasswordRequest{}
+	err := c.ShouldBind(req)
+	if err != nil {
+		c.AbortWithStatusJSON(403, u.UnAuthorizedMessage())
+		return
+	}
+	user, ok := c.Get("user")
+	if !ok {
+		c.JSON(403, u.UnAuthorizedMessage())
+		return
+	}
+
+	id := user . (uint)
+	err = models.ChangeDriversPassword(req.OldPassword, req.NewPassword, id)
+	if err != nil {
+		c.JSON(200, u.Message(false, err.Error()))
+		return
+	}
+
+	c.JSON(200, u.Message(true, "success"))
+}

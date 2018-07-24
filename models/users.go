@@ -6,6 +6,7 @@ import (
 	u "citicab/utils"
 	"golang.org/x/crypto/bcrypt"
 	"fmt"
+	"errors"
 )
 
 type User struct {
@@ -146,6 +147,74 @@ func (user *User) SendForgotPasswordEmail() (map[string] interface{}) {
 	return u.Message(true, "Success")
 }
 
+
+func ChangeUsersPassword(old, newPassword string, id uint) error {
+
+	if len(old) <= 0 || len(newPassword) <= 0 {
+		return errors.New("Password body cannot be empty")
+	}
+
+	user := GetUser(id)
+	if user == nil {
+		return errors.New("User not found")
+	}
+
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(old))
+	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+		return errors.New("Old password doesn't match")
+	}
+
+	hashed, _ := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	err = Db.Table("users").Where("id = ?", id).UpdateColumn("password", string(hashed)).Error
+	if err != nil {
+		return errors.New("Failed to update password at this time. Please retry")
+	}
+
+	return nil
+}
+
+func GetUserRideHistory(id uint) (error, []*Ride) {
+
+	temp := make([]*Ride, 0)
+	err := Db.Table("rides").Where("user_id = ?", id).Find(&temp).Error
+	if err != nil {
+		return err, nil
+	}
+
+	data := make([]*Ride, 0)
+	for _, next := range temp {
+		data = append(data, GetRide(next.ID))
+	}
+
+	return nil, data
+}
+
+
+func EditUser(column, value string, id uint) (error, *User){
+
+	user := &User{}
+	if column == "email" {
+		Db.Table("users").Where("email = ?", value).First(user)
+		if user.ID > 0 {
+			return errors.New("Email already in use by another customer"), nil
+		}
+	}
+	if column == "phone" {
+		Db.Table("users").Where("phone = ?", value).First(user)
+		if user.ID > 0 {
+			return errors.New("Phone number already in use by another customer"), nil
+		}
+	}
+
+	Db.Table("users").Where("id = ?", id).UpdateColumn(column, value)
+
+	acc := GetUser(id)
+	if acc != nil {
+		acc.Password = ""
+	}
+	return nil, acc
+}
+
 func GetUserByEmail(email string) *User {
 
 	user := &User{}
@@ -168,3 +237,33 @@ func GetUser(id uint) *User {
 
 	return user
 }
+
+type Card struct {
+	gorm.Model
+	UserId uint `json:"user_id"`
+	CardNo string `json:"card_no"`
+	ExpiryMonth string `json:"expiry_month"`
+	ExpiryYear string `json:"expiry_year"`
+	Cvv string `json:"cvv"`
+}
+
+func AddCard(card *Card) error {
+
+	if card.UserId <= 0 {
+		return errors.New("Card must have a user!")
+	}
+
+	return Db.Create(card).Error
+}
+
+func GetCards(user uint) ([]*Card, error) {
+
+	data := make([]*Card, 0)
+	err := Db.Table("cards").Where("user_id = ?", user).Find(&data).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+

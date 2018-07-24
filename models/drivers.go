@@ -182,3 +182,28 @@ func Edit(column, value string, user uint) (error, *Driver){
 	Db.Table("drivers").Where("id = ?", user).UpdateColumn(column, value)
 	return nil, GetDriver(user)
 }
+
+func ChangeDriversPassword(old, newPassword string, id uint) error {
+
+	if len(old) <= 0 || len(newPassword) <= 0 {
+		return errors.New("Password body cannot be empty")
+	}
+
+	driver := GetDriver(id)
+	if driver == nil {
+		return errors.New("Driver not found")
+	}
+
+	err := bcrypt.CompareHashAndPassword([]byte(driver.Password), []byte(old))
+	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+		return errors.New("Old password doesn't match")
+	}
+
+	hashed, _ := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	err = Db.Table("drivers").Where("id = ?", id).UpdateColumn("password", string(hashed)).Error
+	if err != nil {
+		return errors.New("Failed to update password at this time. Please retry")
+	}
+
+	return nil
+}

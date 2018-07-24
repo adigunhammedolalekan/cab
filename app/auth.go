@@ -18,28 +18,22 @@ var GinJwt = func(c *gin.Context) {
 						"/api/driver/login"}
 	path := c.Request.RequestURI
 
-	var noAuthContained bool = false
 	for _, val := range noAuth {
 		if val == path {
-			noAuthContained = true
-			break
+			c.Next()
+			return
 		}
-	}
-
-	if noAuthContained {
-		c.JSON(403, u.UnAuthorizedMessage())
-		return
 	}
 
 	headerValue := c.GetHeader("Authorization")
 	if headerValue == "" {
-		c.JSON(403, u.Message(false, "UnAuthorized"))
+		c.AbortWithStatusJSON(403, u.Message(false, "UnAuthorized"))
 		return
 	}
 
 	values := strings.Split(headerValue, " ")
 	if len(values) < 2 || len(values) > 2 {
-		c.JSON(403, u.Message(false, "Invalid/Malformed token"))
+		c.AbortWithStatusJSON(403, u.Message(false, "Invalid/Malformed token"))
 		return
 	}
 
@@ -50,11 +44,11 @@ var GinJwt = func(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.JSON(403, u.Message(false, "Failed to recognize token"))
+		c.AbortWithStatusJSON(403, u.Message(false, "Failed to recognize token"))
 		return
 	}
 	if !claim.Valid {
-		c.JSON(403, u.Message(false, "Failed to proceed. Invalid token"))
+		c.AbortWithStatusJSON(403, u.Message(false, "Failed to proceed. Invalid token"))
 		return
 	}
 

@@ -46,7 +46,9 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 
 	Db = conn
-	Db.Debug().AutoMigrate(&User{}, &Driver{}, &DriverLocation{}, &UserLocation{}, &Auth{}, &Ride{})
+	Db.Debug().AutoMigrate(&User{}, &Driver{},
+	&DriverLocation{}, &UserLocation{},
+	&Auth{}, &Ride{}, &Card{})
 
 	go MessageWorker()
 }
@@ -94,6 +96,14 @@ type SmsRequest struct {
 	Body string `json:"body"`
 	DND string `json:"dnd"`
 }
+
+type ChangePasswordRequest struct {
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
+	Driver uint `json:"driver"`
+	User uint `json:"user"`
+}
+
 
 func (smsRequest *SmsRequest) Send() (error) {
 

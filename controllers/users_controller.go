@@ -155,3 +155,122 @@ var UserForgotPassword = func(c *gin.Context) {
 	c.JSON(200, r)
 }
 
+
+var ChangeUserPassword = func(c *gin.Context) {
+
+	req := &models.ChangePasswordRequest{}
+	err := c.ShouldBind(req)
+	if err != nil {
+		c.AbortWithStatusJSON(403, u.InvalidRequestMessage())
+		return
+	}
+	user, ok := c.Get("user")
+	if !ok {
+		c.AbortWithStatusJSON(403, u.UnAuthorizedMessage())
+		return
+	}
+
+	id := user . (uint)
+	err = models.ChangeUsersPassword(req.OldPassword, req.NewPassword, id)
+	if err != nil {
+		c.JSON(200, u.Message(false, err.Error()))
+		return
+	}
+
+	c.JSON(200, u.Message(true, "success"))
+}
+
+
+var GetUserRideHistory = func(c *gin.Context) {
+
+	user, ok := c.Get("user")
+	if !ok {
+		c.AbortWithStatusJSON(403, u.UnAuthorizedMessage())
+		return
+	}
+
+	id := user . (uint)
+	err, data := models.GetUserRideHistory(id)
+	if err != nil {
+		c.AbortWithStatusJSON(200, u.Message(false, "Failed to fetch history. Please retry"))
+		return
+	}
+
+	response := u.Message(true, "success")
+	response["data"] = data
+	c.JSON(200, response)
+}
+
+
+var EditUserAccount = func(c *gin.Context) {
+
+	data := make(map[string] interface{})
+	err := c.ShouldBind(&data)
+	if err != nil {
+		c.AbortWithStatusJSON(200, u.InvalidRequestMessage())
+		return
+	}
+
+	user, ok := c.Get("user")
+	if !ok {
+		c.AbortWithStatusJSON(403, u.UnAuthorizedMessage())
+		return
+	}
+
+	id := user . (uint)
+	err, person := models.EditUser(data["column"] . (string), data["value"] . (string), id)
+	if err != nil {
+		c.AbortWithStatusJSON(200, u.Message(false, err.Error()))
+		return
+	}
+
+	response := u.Message(true, "success")
+	response["data"] = person
+	c.JSON(200, response)
+}
+
+var AddCard = func(c *gin.Context) {
+
+	card := &models.Card{}
+	err := c.ShouldBind(card)
+	if err != nil {
+		c.AbortWithStatusJSON(200, u.InvalidRequestMessage())
+		return
+	}
+
+	user, ok := c.Get("user")
+	if !ok {
+		c.AbortWithStatusJSON(403, u.UnAuthorizedMessage())
+		return
+	}
+
+	id := user . (uint)
+	card.UserId = id
+	err = models.AddCard(card)
+	if err != nil {
+		c.AbortWithStatusJSON(200, u.Message(false, err.Error()))
+		return
+	}
+
+	c.JSON(200, u.Message(true, "success"))
+}
+
+var GetCards = func(c *gin.Context) {
+
+	user, ok := c.Get("user")
+	if !ok {
+		c.AbortWithStatusJSON(403, u.UnAuthorizedMessage())
+		return
+	}
+
+	id := user . (uint)
+	data, err := models.GetCards(id)
+	if err != nil {
+		c.AbortWithStatusJSON(200, u.Message(false, "error"))
+		return
+	}
+
+	response := u.Message(true, "success")
+	response["data"] = data
+	c.JSON(200, response)
+}

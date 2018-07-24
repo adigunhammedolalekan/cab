@@ -44,6 +44,12 @@ func main() {
 	r.POST("/api/driver/status/update", controllers.UpdateDriverStatus)
 	r.POST("/api/driver/account/edit", controllers.EditAccount)
 	r.GET("/api/driver/rides", controllers.GetRideHistory)
+	r.POST("/api/driver/changepassword", controllers.ChangePassword)
+	r.GET("/api/user/rides", controllers.GetUserRideHistory)
+	r.POST("/api/user/changepassword", controllers.ChangeUserPassword)
+	r.POST("/api/user/account/edit", controllers.EditUserAccount)
+	r.POST("/api/user/card/new", controllers.AddCard)
+	r.GET("/api/user/cards", controllers.GetCards)
 
 	r.GET("/api/ws/connect", func(context *gin.Context) {
 		m.HandleRequest(context.Writer, context.Request)
