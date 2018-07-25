@@ -73,7 +73,7 @@ func NotifyRideStatus(ride *models.Ride) error {
 
 	wsMessage := &models.WsMessage{
 		Action: "ride_update",
-		NewRide:ride,
+		NewRide: ride,
 	}
 
 	data, _ := json.Marshal(wsMessage)

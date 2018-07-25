@@ -86,7 +86,7 @@ var UpdateStatus = func(c *gin.Context) {
 
 	id, ok := c.Get("user")
 	if !ok {
-		c.JSON(200, u.UnAuthorizedMessage())
+		c.AbortWithStatusJSON(200, u.UnAuthorizedMessage())
 		return
 	}
 
@@ -119,4 +119,45 @@ var UpdateStatus = func(c *gin.Context) {
 		core.NotifyRideStatus(ride)
 		c.JSON(200, u.Message(true, "Ride Status Updated"))
 	}
+}
+
+var RateRide = func(c *gin.Context) {
+
+	id, ok := c.Get("user")
+	if !ok {
+		c.JSON(200, u.UnAuthorizedMessage())
+		return
+	}
+
+	rating := &models.Rating{}
+	err := c.ShouldBind(rating)
+	if err != nil {
+		c.AbortWithStatusJSON(200, u.InvalidRequestMessage())
+		return
+	}
+
+	rating.UserId = id . (uint)
+	err = rating.Create()
+	if err != nil {
+		c.AbortWithStatusJSON(200, u.Message(false, err.Error()))
+		return
+	}
+
+	response := u.Message(true, "success")
+	response["data"] = rating
+	c.JSON(200, response)
+}
+
+var RatingsAndFeedBack = func(c *gin.Context) {
+
+	id, ok := c.Get("user")
+	if !ok {
+		c.JSON(200, u.UnAuthorizedMessage())
+		return
+	}
+
+	data := models.GetRating(id . (uint))
+	response := u.Message(true, "success")
+	response["data"] = data
+	c.JSON(200, response)
 }

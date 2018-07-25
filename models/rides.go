@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/kellydunn/golang-geo"
 	"fmt"
+	"github.com/pkg/errors"
 )
 
 const (
@@ -167,4 +168,49 @@ func GetRide(id uint) *Ride {
 	ride.Driver = driver
 
 	return ride
+}
+
+type Rating struct {
+	gorm.Model
+	RideId uint `json:"ride_id"`
+	Rating float64 `json:"rating"`
+	Comment string `json:"comment"`
+	DriverId uint `json:"driver_id"`
+	UserId uint `json:"user_id"`
+
+	Ride *Ride `sql:"-" gorm:"-" json:"ride"`
+}
+
+func (r *Rating) Create() (error) {
+
+	var count int
+	err := Db.Table("ratings").Where("ride_id = ?", r.RideId).Count(&count).Error
+	if err != nil && err == gorm.ErrRecordNotFound {
+		return Db.Create(r).Error
+	}
+
+	if count > 0 {
+		return errors.New("Ride has already been rated")
+	}
+
+	return nil
+}
+
+func GetRating(driver uint) []*Rating {
+
+	data := make([]*Rating, 0)
+	err := Db.Table("ratings").Where("driver_id = ?", driver).Find(&data).Error
+	if err != nil {
+		return nil
+	}
+
+	result := make([]*Rating, 0)
+	for _, v := range data {
+		if v != nil {
+			v.Ride = GetRide(v.RideId)
+			result = append(result, v)
+		}
+	}
+
+	return result
 }

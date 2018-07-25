@@ -50,6 +50,8 @@ func main() {
 	r.POST("/api/user/account/edit", controllers.EditUserAccount)
 	r.POST("/api/user/card/new", controllers.AddCard)
 	r.GET("/api/user/cards", controllers.GetCards)
+	r.GET("/api/driver/ratings", controllers.RatingsAndFeedBack)
+	r.POST("/api/ride/rate", controllers.RateRide)
 
 	r.GET("/api/ws/connect", func(context *gin.Context) {
 		m.HandleRequest(context.Writer, context.Request)

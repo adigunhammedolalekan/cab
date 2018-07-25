@@ -16,6 +16,7 @@ type User struct {
 	Email string `json:"email"`
 	Password string `json:"password"`
 	Status string `json:"status"`
+	Picture string `json:"picture"`
 	Verified bool `json:"verified"`
 	Token string `gorm:"-" sql:"-" json:"token"`
 }
