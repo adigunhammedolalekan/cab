@@ -4,7 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/kellydunn/golang-geo"
 	"fmt"
-	"github.com/pkg/errors"
+	"errors"
 )
 
 const (
