@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a6ef0046-dae0-4be2-b38b-fb0053b5f628" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/controllers/rides_controller.go" afterPath="$PROJECT_DIR$/controllers/rides_controller.go" />
-      <change beforePath="$PROJECT_DIR$/core/ws.go" afterPath="$PROJECT_DIR$/core/ws.go" />
-      <change beforePath="$PROJECT_DIR$/main.go" afterPath="$PROJECT_DIR$/main.go" />
-      <change beforePath="$PROJECT_DIR$/models/rides.go" afterPath="$PROJECT_DIR$/models/rides.go" />
-      <change beforePath="$PROJECT_DIR$/models/users.go" afterPath="$PROJECT_DIR$/models/users.go" />
-    </list>
+    <list default="true" id="a6ef0046-dae0-4be2-b38b-fb0053b5f628" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

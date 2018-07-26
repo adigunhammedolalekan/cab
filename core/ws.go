@@ -82,12 +82,16 @@ func NotifyRideStatus(ride *models.Ride) error {
 
 	sess := wsChannels[driverSessId]
 	if sess != nil {
-		sess.Write(data)
+		fmt.Println("Sending to driver")
+		err := sess.Write(data)
+		fmt.Println(err)
 	}
 
-	sess = wsChannels[userSessId]
-	if sess != nil {
-		sess.Write(data)
+	s := wsChannels[userSessId]
+	if s != nil {
+		fmt.Println("Sending to User")
+		err := s.Write(data)
+		fmt.Println(err)
 	}
 
 	return nil
