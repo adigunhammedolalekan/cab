@@ -136,6 +136,7 @@ var RateRide = func(c *gin.Context) {
 		return
 	}
 
+
 	rating.UserId = id . (uint)
 	err = rating.Create()
 	if err != nil {

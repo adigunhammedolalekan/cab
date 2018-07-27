@@ -48,7 +48,7 @@ func init() {
 	Db = conn
 	Db.Debug().AutoMigrate(&User{}, &Driver{},
 	&DriverLocation{}, &UserLocation{},
-	&Auth{}, &Ride{}, &Card{})
+	&Auth{}, &Ride{}, &Card{}, &Rating{})
 
 	go MessageWorker()
 }
