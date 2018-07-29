@@ -7,7 +7,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"fmt"
 	"errors"
-	"database/sql/driver"
 )
 
 type Driver struct {
@@ -42,7 +41,7 @@ func VerifyDriversPhone(phone string) (map[string] interface{}) {
 	}
 
 	tx := Db.Begin()
-	err := tx.Error
+	err = tx.Error
 	if err != nil {
 		return u.Message(false, "Unable to create account at this time. Please retry later")
 	}
