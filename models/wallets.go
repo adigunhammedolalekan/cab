@@ -2,7 +2,7 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/pkg/errors"
+	"errors"
 )
 
 type Wallet struct {
