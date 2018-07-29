@@ -111,6 +111,10 @@
 			"Rev": "6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c"
 		},
 		{
+			"ImportPath": "github.com/mitchellh/mapstructure",
+			"Rev": "f15292f7a699fcc1a38a80977f80a046874ba8ac"
+		},
+		{
 			"ImportPath": "github.com/modern-go/concurrent",
 			"Comment": "1.0.3",
 			"Rev": "bacd9c7ef1dd9b15be4a9909b8ac7a4e313eec94"
@@ -119,6 +123,10 @@
 			"ImportPath": "github.com/modern-go/reflect2",
 			"Comment": "1.0.0-11-g58118c1",
 			"Rev": "58118c1ea9161250907268a484af4dd6ed314280"
+		},
+		{
+			"ImportPath": "github.com/rpip/paystack-go",
+			"Rev": "5333b023a74e9bcfed672cd7e55947d67b2e7d59"
 		},
 		{
 			"ImportPath": "github.com/sendgrid/rest",
@@ -171,11 +179,6 @@
 			"ImportPath": "gopkg.in/go-playground/validator.v8",
 			"Comment": "v8.18.2",
 			"Rev": "5f1438d3fca68893a817e4a66806cea46a9e4ebf"
-		},
-		{
-			"ImportPath": "gopkg.in/njern/gonexmo.v2",
-			"Comment": "v2.0.0",
-			"Rev": "decd62febd9bd8900d1e5b896dd8573ec9cff48d"
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",

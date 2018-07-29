@@ -35,7 +35,7 @@ var InitTxn = func(c *gin.Context) {
 	}
 
 	txnRequest := &paystack.TransactionRequest{}
-	txnRequest.Amount = float32(payload.AmountValue())
+	txnRequest.Amount = float32(payload.AmountValue() * 100 /*Convert amount to KOBO*/)
 	txnRequest.Email = user.Email
 
 	ps := paystack.NewClient(os.Getenv("PS_KEY"), nil)

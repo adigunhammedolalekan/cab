@@ -59,6 +59,7 @@ var NewRide = func(c *gin.Context) {
 		DestinationAddress: rideRequest.DestinationAddress,
 		PickupAddress: rideRequest.PickUpAddress,
 		Message: rideRequest.Message,
+		Pm: rideRequest.PaymentMethod,
 	}
 
 	driver := models.FindDriver(loc)

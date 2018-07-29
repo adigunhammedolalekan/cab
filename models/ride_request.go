@@ -10,4 +10,5 @@ type RideRequest struct {
 	PickUpAddress string `json:"pick_up_address"`
 	DestinationAddress string `json:"destination_address"`
 	Message string `json:"message"`
+	PaymentMethod string `json:"pm"`
 }

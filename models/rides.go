@@ -27,6 +27,7 @@ type Ride struct {
 	Message string `json:"message"`
 	User *User `gorm:"-" sql:"-" json:"user"`
 	Driver *Driver `gorm:"-" sql:"-" json:"driver"`
+	Pm string `json:"pm"`
 
 }
 

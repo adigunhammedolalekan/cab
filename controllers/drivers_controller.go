@@ -254,3 +254,19 @@ var ChangePassword = func(c *gin.Context) {
 
 	c.JSON(200, u.Message(true, "success"))
 }
+
+var DriverWallet = func(c *gin.Context) {
+
+	user, ok := c.Get("user")
+	if !ok {
+		c.JSON(403, u.UnAuthorizedMessage())
+		return
+	}
+
+	wallet := models.GetWallet(user . (uint))
+	response := u.Message(true, "success")
+	response["data"] = wallet
+	c.JSON(200, response)
+}
+
+
