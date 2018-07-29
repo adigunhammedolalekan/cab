@@ -129,7 +129,7 @@ var RateRide = func(c *gin.Context) {
 		return
 	}
 
-	rating := &models.Rating{}
+	rating := &models.RatingPayLoad{}
 	err := c.ShouldBind(rating)
 	if err != nil {
 		c.AbortWithStatusJSON(200, u.InvalidRequestMessage())
@@ -138,7 +138,7 @@ var RateRide = func(c *gin.Context) {
 
 
 	rating.UserId = id . (uint)
-	err = rating.Create()
+	err = models.Create(rating)
 	if err != nil {
 		c.AbortWithStatusJSON(200, u.Message(false, err.Error()))
 		return

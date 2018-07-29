@@ -207,7 +207,10 @@ func EditUser(column, value string, id uint) (error, *User){
 		}
 	}
 
-	Db.Table("users").Where("id = ?", id).UpdateColumn(column, value)
+	err := Db.Table("users").Where("id = ?", id).UpdateColumn(column, value).Error
+	if err != nil {
+		return err, nil
+	}
 
 	acc := GetUser(id)
 	if acc != nil {

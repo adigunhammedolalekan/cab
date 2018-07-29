@@ -5,6 +5,7 @@ import (
 	"github.com/kellydunn/golang-geo"
 	"fmt"
 	"errors"
+	"encoding/json"
 )
 
 const (
@@ -170,6 +171,24 @@ func GetRide(id uint) *Ride {
 	return ride
 }
 
+type RatingPayLoad struct {
+	RideId uint `json:"ride_id"`
+	Rating json.Number `json:"rating"`
+	Comment string `json:"comment"`
+	DriverId uint `json:"driver_id"`
+	UserId uint `json:"user_id"`
+}
+
+func (r *RatingPayLoad) RatingValue() (float64) {
+
+	val, err := r.Rating.Float64()
+	if err != nil {
+		return 0.0
+	}
+
+	return val
+}
+
 type Rating struct {
 	gorm.Model
 	RideId uint `json:"ride_id"`
@@ -181,11 +200,17 @@ type Rating struct {
 	Ride *Ride `sql:"-" gorm:"-" json:"ride"`
 }
 
-func (r *Rating) Create() (error) {
+func Create(load *RatingPayLoad) (error) {
 
 	var count int
-	err := Db.Table("ratings").Where("ride_id = ?", r.RideId).Count(&count).Error
+	err := Db.Table("ratings").Where("ride_id = ?", load.RideId).Count(&count).Error
 	if err != nil && err == gorm.ErrRecordNotFound {
+		r := &Rating{}
+		r.Rating = load.RatingValue()
+		r.Comment = load.Comment
+		r.RideId = load.RideId
+		r.UserId = load.UserId
+		r.DriverId = load.DriverId
 		return Db.Create(r).Error
 	}
 

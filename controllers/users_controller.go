@@ -218,7 +218,9 @@ var EditUserAccount = func(c *gin.Context) {
 	}
 
 	id := user . (uint)
-	err, person := models.EditUser(data["column"] . (string), data["value"] . (string), id)
+	column := data["column"] . (string)
+	value := data["value"] . (string)
+	err, person := models.EditUser(column, value, id)
 	if err != nil {
 		c.AbortWithStatusJSON(200, u.Message(false, err.Error()))
 		return
