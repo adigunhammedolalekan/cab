@@ -48,7 +48,7 @@ func init() {
 	Db = conn
 	Db.Debug().AutoMigrate(&User{}, &Driver{},
 	&DriverLocation{}, &UserLocation{},
-	&Auth{}, &Ride{}, &Card{}, &Rating{})
+	&Auth{}, &Ride{}, &Card{}, &Rating{}, &Wallet{})
 
 	go MessageWorker()
 }
@@ -73,6 +73,14 @@ func MessageWorker() {
 
 func GetDB() *gorm.DB {
 	return Db
+}
+
+type TxnRequestPayload struct {
+	Amount json.Number `json:"amount"`
+}
+
+func (p *TxnRequestPayload) AmountValue() (float64) {
+
 }
 
 type AuthCode struct {

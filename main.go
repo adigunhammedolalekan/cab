@@ -52,6 +52,8 @@ func main() {
 	r.GET("/api/user/cards", controllers.GetCards)
 	r.GET("/api/driver/ratings", controllers.RatingsAndFeedBack)
 	r.POST("/api/ride/rate", controllers.RateRide)
+	r.POST("/api/txn/accesscode", controllers.InitTxn)
+	r.POST("/api/txn/verify", controllers.VerifyTxn)
 
 	r.GET("/api/ws/connect", func(context *gin.Context) {
 		m.HandleRequest(context.Writer, context.Request)
