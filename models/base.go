@@ -81,6 +81,12 @@ type TxnRequestPayload struct {
 
 func (p *TxnRequestPayload) AmountValue() (float64) {
 
+	amt, err := p.Amount.Float64()
+	if err != nil {
+		return 0.0
+	}
+
+	return amt
 }
 
 type AuthCode struct {

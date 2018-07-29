@@ -29,6 +29,12 @@ var InitTxn = func(c *gin.Context) {
 		c.AbortWithStatusJSON(403, u.UnAuthorizedMessage())
 		return
 	}
+
+	if payload.AmountValue() <= 0 {
+		c.AbortWithStatusJSON(400, u.Message(false, "Invalid Txn amount"))
+		return
+	}
+
 	txnRequest := &paystack.TransactionRequest{}
 	txnRequest.Amount = float32(payload.AmountValue())
 	txnRequest.Email = user.Email

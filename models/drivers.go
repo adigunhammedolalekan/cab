@@ -7,6 +7,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"fmt"
 	"errors"
+	"database/sql/driver"
 )
 
 type Driver struct {
@@ -40,13 +41,27 @@ func VerifyDriversPhone(phone string) (map[string] interface{}) {
 		return resp
 	}
 
-	driver := &Driver{Phone: phone}
-	err = Db.Create(driver).Error
+	tx := Db.Begin()
+	err := tx.Error
 	if err != nil {
-		return u.Message(false, "Failed to create new account. Please, retry")
+		return u.Message(false, "Unable to create account at this time. Please retry later")
 	}
 
-	auth := CreateAuth(driver.ID)
+	dv := &Driver{Phone: phone}
+	err = tx.Create(dv).Error
+	if err != nil {
+		tx.Rollback()
+		return u.Message(false, "Failed to create new account. Please, retry")
+	}
+	w := NewWallet(dv.ID)
+	err = Db.Create(w).Error
+	if err != nil {
+		tx.Rollback()
+		return u.Message(false, "Unable to create account at this time. Please retry later")
+	}
+	tx.Commit()
+
+	auth := CreateAuth(dv.ID)
 	if auth != nil {
 		text := fmt.Sprintf("Your CitiCab authentication code: %d", auth.Code)
 		smsRequest := &SmsRequest{
@@ -59,7 +74,7 @@ func VerifyDriversPhone(phone string) (map[string] interface{}) {
 		SmsQueue <- smsRequest
 	}
 
-	token := GenJWT(driver.ID)
+	token := GenJWT(dv.ID)
 	resp := u.Message(true, "success")
 	resp["exists"] = false
 	resp["token"] = token
