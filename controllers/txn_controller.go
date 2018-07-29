@@ -3,8 +3,7 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	u "citicab/utils"
-	"bitescrow/models"
-	models2 "citicab/models"
+	models "citicab/models"
 	"github.com/rpip/paystack-go"
 	"os"
 )
@@ -17,7 +16,7 @@ var InitTxn = func(c *gin.Context) {
 		return
 	}
 
-	payload := &models2.TxnRequestPayload{}
+	payload := &models.TxnRequestPayload{}
 	err := c.ShouldBind(payload)
 	if err != nil {
 		c.AbortWithStatusJSON(403, u.InvalidRequestMessage())
@@ -79,7 +78,7 @@ var VerifyTxn = func(c *gin.Context) {
 		return
 	}
 
-	ride := models2.GetRide(data["ride_id"] . (uint))
+	ride := models.GetRide(data["ride_id"] . (uint))
 	if ride == nil {
 		c.AbortWithStatusJSON(200, u.InvalidRequestMessage())
 		return
@@ -87,7 +86,7 @@ var VerifyTxn = func(c *gin.Context) {
 
 	if txn.Status == "success" {
 		value := txn.Amount / 100.0
-		err := models2.FundWallet(ride.DriverId, value)
+		err := models.FundWallet(ride.DriverId, value)
 		if err != nil {
 			c.AbortWithStatusJSON(200, u.Message(false, err.Error()))
 			return
