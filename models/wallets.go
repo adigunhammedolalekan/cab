@@ -3,6 +3,8 @@ package models
 import (
 	"github.com/jinzhu/gorm"
 	"errors"
+	"github.com/rpip/paystack-go"
+	"os"
 )
 
 type Wallet struct {
@@ -39,4 +41,14 @@ func GetWallet(dv uint) *Wallet {
 	}
 
 	return w
+}
+
+func GetBanks() (*paystack.BankList, error) {
+
+	ps := paystack.NewClient(os.Getenv("PS_KEY"), nil)
+	return ps.Bank.List()
+}
+
+type Transfer struct {
+
 }

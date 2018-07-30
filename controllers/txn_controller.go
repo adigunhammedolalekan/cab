@@ -97,3 +97,16 @@ var VerifyTxn = func(c *gin.Context) {
 		c.JSON(200, u.Message(false, "Invalid transaction"))
 	}
 }
+
+var GetBanks = func(c *gin.Context) {
+
+	banks, err := models.GetBanks()
+	if err != nil {
+		c.AbortWithStatusJSON(200, u.Message(false, "Failed to fetch bank data"))
+		return
+	}
+
+	data := u.Message(true, "success")
+	data["data"] = banks.Values
+	c.JSON(200, data)
+}
