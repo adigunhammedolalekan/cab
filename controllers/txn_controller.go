@@ -78,7 +78,8 @@ var VerifyTxn = func(c *gin.Context) {
 		return
 	}
 
-	ride := models.GetRide(data["ride_id"] . (uint))
+	rId := data["ride_id"] . (float64)
+	ride := models.GetRide(uint(rId))
 	if ride == nil {
 		c.AbortWithStatusJSON(200, u.InvalidRequestMessage())
 		return
