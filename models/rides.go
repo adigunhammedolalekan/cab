@@ -58,7 +58,7 @@ func (ride *Ride) UpdateStatus() (error) {
 		return err
 	}
 
-	if ride.Status == 2 || ride.Status == 3 {//Cancelled by USER or DRIVER?, free the driver
+	if ride.Status == 2 || ride.Status == 3 || ride.Status == 5 {//Cancelled by USER or DRIVER? OR Ended, free the driver
 		err = tx.Table("drivers").Where("id = ?", ride.Driver.ID).UpdateColumn("occupied", 0).Error
 		if err != nil {
 			tx.Rollback()
