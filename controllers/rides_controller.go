@@ -163,3 +163,17 @@ var RatingsAndFeedBack = func(c *gin.Context) {
 	response["data"] = data
 	c.JSON(200, response)
 }
+
+var TxnHistory = func(c *gin.Context) {
+
+	id, ok := c.Get("user")
+	if !ok {
+		c.JSON(200, u.UnAuthorizedMessage())
+		return
+	}
+
+	data := models.GetRideTransactionHistory(id . (uint))
+	r := u.Message(true, "success")
+	r["data"] = data
+	c.JSON(200, data)
+}

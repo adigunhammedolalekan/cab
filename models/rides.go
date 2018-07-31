@@ -16,7 +16,7 @@ type Ride struct {
 	gorm.Model
 	UserId uint `json:"user_id"`
 	DriverId uint `json:"driver_id"`
-	Fee uint `json:"fee"`
+	Fee float64 `json:"fee"`
 	PickUpLat float64 `json:"pick_up_lat"`
 	PickUpLon float64 `json:"pick_up_lon"`
 	DestinationLat float64 `json:"destination_lat"`
@@ -28,6 +28,7 @@ type Ride struct {
 	User *User `gorm:"-" sql:"-" json:"user"`
 	Driver *Driver `gorm:"-" sql:"-" json:"driver"`
 	Pm string `json:"pm"`
+	ReadableDate string `gorm:"-" sql:"-" json:"readable_date"`
 
 }
 
@@ -168,8 +169,29 @@ func GetRide(id uint) *Ride {
 
 	ride.User = user
 	ride.Driver = driver
+	ride.ReadableDate = ride.CreatedAt.Format("10/05/2016 10:40pm")
 
 	return ride
+}
+
+func UpdateRideFee(rideId uint, fee float64) error {
+	return Db.Table("rides").Where("id = ?", rideId).UpdateColumn("fee", fee).Error
+}
+
+func GetRideTransactionHistory(driverId uint) []*Ride {
+
+	data := make([]*Ride, 0)
+	err := Db.Table("rides").Where("driver_id = ? AND status = ?", driverId, 5).Find(&data).Error
+	if err != nil {
+		return nil
+	}
+
+	result := make([]*Ride, 0)
+	for _, next := range data {
+		result = append(result, GetRide(next.ID))
+	}
+
+	return result
 }
 
 type RatingPayLoad struct {

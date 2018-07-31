@@ -56,6 +56,7 @@ func main() {
 	r.POST("/api/txn/verify", controllers.VerifyTxn)
 	r.GET("/api/me/wallet", controllers.DriverWallet)
 	r.GET("/api/banks", controllers.GetBanks)
+	r.GET("/api/txnhistory", controllers.TxnHistory)
 
 	r.GET("/api/ws/connect", func(context *gin.Context) {
 		m.HandleRequest(context.Writer, context.Request)

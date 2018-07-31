@@ -88,6 +88,7 @@ var VerifyTxn = func(c *gin.Context) {
 	if txn.Status == "success" {
 		value := txn.Amount / 100.0
 		err := models.FundWallet(ride.DriverId, value)
+		models.UpdateRideFee(ride.ID, float64(value))
 		if err != nil {
 			c.AbortWithStatusJSON(200, u.Message(false, err.Error()))
 			return
