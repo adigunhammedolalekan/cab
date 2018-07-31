@@ -175,5 +175,5 @@ var TxnHistory = func(c *gin.Context) {
 	data := models.GetRideTransactionHistory(id . (uint))
 	r := u.Message(true, "success")
 	r["data"] = data
-	c.JSON(200, data)
+	c.JSON(200, r)
 }
