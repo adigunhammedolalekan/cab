@@ -280,13 +280,12 @@ var GetCards = func(c *gin.Context) {
 
 var RemoveCard = func(c *gin.Context) {
 
-	user, ok := c.Get("user")
+	_, ok := c.Get("user")
 	if !ok {
 		c.AbortWithStatusJSON(403, u.UnAuthorizedMessage())
 		return
 	}
 
-	id := user . (uint)
 	card, ok := c.Params.Get("card")
 	if !ok {
 		c.AbortWithStatusJSON(200, u.InvalidRequestMessage())
