@@ -260,6 +260,10 @@ func AddCard(card *Card) error {
 	return Db.Create(card).Error
 }
 
+func RemoveCard(id uint) error {
+	return Db.Where("id = ?", id).Delete(&Card{}).Error
+}
+
 func GetCards(user uint) ([]*Card, error) {
 
 	data := make([]*Card, 0)

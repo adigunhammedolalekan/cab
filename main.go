@@ -57,6 +57,7 @@ func main() {
 	r.GET("/api/me/wallet", controllers.DriverWallet)
 	r.GET("/api/banks", controllers.GetBanks)
 	r.GET("/api/txnhistory", controllers.TxnHistory)
+	r.POST("/api/user/remove/:card", controllers.RemoveCard)
 
 	r.GET("/api/ws/connect", func(context *gin.Context) {
 		m.HandleRequest(context.Writer, context.Request)

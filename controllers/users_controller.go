@@ -5,6 +5,7 @@ import (
 	u "citicab/utils"
 	"citicab/models"
 	"fmt"
+	"strconv"
 )
 
 var VerifyUser = func(c *gin.Context) {
@@ -275,4 +276,30 @@ var GetCards = func(c *gin.Context) {
 	response := u.Message(true, "success")
 	response["data"] = data
 	c.JSON(200, response)
+}
+
+var RemoveCard = func(c *gin.Context) {
+
+	user, ok := c.Get("user")
+	if !ok {
+		c.AbortWithStatusJSON(403, u.UnAuthorizedMessage())
+		return
+	}
+
+	id := user . (uint)
+	card, ok := c.Params.Get("card")
+	if !ok {
+		c.AbortWithStatusJSON(200, u.InvalidRequestMessage())
+		return
+	}
+
+	cid, err := strconv.Atoi(card)
+	if err != nil {
+		c.AbortWithStatusJSON(200, u.InvalidRequestMessage())
+		return
+	}
+
+	cardId := uint(cid)
+	models.RemoveCard(cardId)
+	c.JSON(200, u.Message(true, "success"))
 }
